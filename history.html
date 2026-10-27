@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis History | CareerFit AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/analyze.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-icon">C</span>
+            <span>CareerFit AI</span>
+        </a>
+
+        <div class="header-links">
+            <a href="/">Dashboard</a>
+            <a href="/analyze">New Analysis</a>
+        </div>
+    </header>
+
+    <main class="analysis-container">
+        <div class="page-heading">
+            <p class="eyebrow">YOUR CAREER PROGRESS</p>
+            <h1>Analysis History</h1>
+            <p class="subtitle">
+                Review your previously saved resume and job analyses.
+            </p>
+        </div>
+
+        <div id="historyStatus" role="status" aria-live="polite">
+            Loading your analysis history...
+        </div>
+
+        <div id="historyList" class="history-list"></div>
+
+        <div class="form-footer">
+            <a href="/" class="secondary-button">Dashboard</a>
+            <a href="/analyze" class="primary-button">Analyze Another Job →</a>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/history.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,1198 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume & Job Analysis | CareerFit AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/analyze.css') }}">
+
+    <style>
+        [hidden] {
+            display: none !important;
+        }
+
+        /* ATS report */
+        .ats-report {
+            margin-top: 28px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            background: #ffffff;
+            color: #1e293b;
+        }
+
+        .ats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .ats-score {
+            font-size: 36px;
+            font-weight: 700;
+            color: #7c3aed;
+        }
+
+        .ats-score small {
+            font-size: 16px;
+            color: #64748b;
+        }
+
+        .ats-progress-track {
+            width: 100%;
+            height: 10px;
+            overflow: hidden;
+            border-radius: 20px;
+            background: #e9e5f5;
+            margin: 12px 0;
+        }
+
+        .ats-progress-fill {
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            background: #7c3aed;
+            transition: width 0.4s ease;
+        }
+
+        .ats-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .ats-stat {
+            padding: 14px;
+            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .ats-stat strong {
+            display: block;
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .ats-stat span {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .ats-check-list {
+            display: grid;
+            gap: 12px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .ats-check-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .ats-check-item.passed {
+            border-left: 4px solid #16a34a;
+        }
+
+        .ats-check-item.failed {
+            border-left: 4px solid #dc2626;
+        }
+
+        .ats-check-name {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .ats-check-status {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .ats-check-item.passed .ats-check-status {
+            color: #15803d;
+        }
+
+        .ats-check-item.failed .ats-check-status {
+            color: #b91c1c;
+        }
+
+        .ats-check-points {
+            white-space: nowrap;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .ats-section {
+            margin-top: 26px;
+        }
+
+        .ats-section h3 {
+            margin-bottom: 12px;
+        }
+
+        .ats-suggestions {
+            padding-left: 22px;
+            line-height: 1.7;
+        }
+
+        .ats-suggestions li {
+            margin-bottom: 8px;
+        }
+
+        .ats-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .ats-tag {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 20px;
+            background: #f1f5f9;
+            color: #334155;
+            font-size: 13px;
+        }
+
+        /* Prioritized resume recommendations */
+        .recommendation-list {
+            display: grid;
+            gap: 14px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .recommendation-card {
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .recommendation-heading {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-priority {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .recommendation-priority.high {
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .recommendation-priority.medium {
+            color: #92400e;
+            background: #fef3c7;
+        }
+
+        .recommendation-priority.low {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .recommendation-card h4 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .recommendation-card p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .recommendation-action {
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .ats-disclaimer {
+            margin-top: 22px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Phase 4: Resume Improvement Assistant */
+        .improvement-assistant {
+            margin-top: 28px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            background: #ffffff;
+            color: #1e293b;
+        }
+
+        .improvement-header {
+            margin-bottom: 20px;
+        }
+
+        .improvement-header h2 {
+            margin-bottom: 10px;
+        }
+
+        .improvement-header p {
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        .improve-resume-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #7c3aed;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .improve-resume-btn:hover {
+            background: #6d28d9;
+        }
+
+        .improve-resume-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .improvement-status {
+            margin-top: 12px;
+            line-height: 1.6;
+            color: #475569;
+        }
+
+        .improvement-subsection {
+            margin-top: 28px;
+        }
+
+        .improvement-subsection h3 {
+            margin-bottom: 14px;
+        }
+
+        .improvement-results-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .improvement-card {
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #ffffff;
+            overflow-wrap: anywhere;
+        }
+
+        .improvement-card h4 {
+            margin: 0 0 10px;
+            font-size: 16px;
+        }
+
+        .improvement-card p {
+            margin: 8px 0;
+            line-height: 1.65;
+        }
+
+        .improvement-priority {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .improvement-priority.high {
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .improvement-priority.medium {
+            color: #92400e;
+            background: #fef3c7;
+        }
+
+        .improvement-priority.low {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .bullet-comparison {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 12px;
+        }
+
+        .bullet-column {
+            min-width: 0;
+            padding: 12px;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .bullet-column strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .bullet-column p {
+            margin: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .copy-improvement-btn {
+            margin-top: 12px;
+            padding: 9px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #334155;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .copy-improvement-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .improvement-empty {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .ats-report,
+            .improvement-assistant {
+                padding: 16px;
+            }
+
+            .ats-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .ats-check-item {
+                flex-direction: column;
+            }
+
+            .bullet-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .improve-resume-btn {
+                width: 100%;
+            }
+        }
+        /* ========================================
+   PHASE 5: JOB RECOMMENDATIONS
+======================================== */
+
+.job-recommendations-section {
+    margin-top: 28px;
+    padding: 28px;
+    border: 1px solid #e0e7ff;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.07);
+    color: #1e293b;
+}
+
+.job-recommendations-header {
+    margin-bottom: 24px;
+}
+
+.job-recommendations-badge {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 20px;
+    background: #ede9fe;
+    color: #6d28d9;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+}
+
+.job-recommendations-header h2 {
+    margin: 14px 0 10px;
+    color: #312e81;
+    font-size: 25px;
+}
+
+.job-recommendations-header p {
+    color: #64748b;
+    line-height: 1.7;
+}
+
+.recommend-jobs-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 13px 22px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 5px 14px rgba(79, 70, 229, 0.22);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recommend-jobs-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(79, 70, 229, 0.3);
+}
+
+.recommend-jobs-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.job-recommendations-status {
+    margin-top: 16px;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.detected-skills-card {
+    margin-top: 22px;
+    padding: 18px;
+    border: 1px solid #bfdbfe;
+    border-radius: 12px;
+    background: #eff6ff;
+}
+
+.detected-skills-card h3 {
+    margin: 0 0 12px;
+    color: #1d4ed8;
+    font-size: 17px;
+}
+
+.detected-skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.detected-skill-tag {
+    display: inline-block;
+    padding: 7px 11px;
+    border-radius: 20px;
+    background: #dbeafe;
+    color: #1e40af;
+    font-size: 13px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.job-recommendation-card {
+    margin-top: 20px;
+    padding: 22px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.job-recommendation-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.job-recommendation-title {
+    margin: 0 0 14px;
+    color: #312e81;
+    font-size: 20px;
+}
+
+.job-match-score {
+    margin: 0 0 10px;
+    color: #4f46e5;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.job-match-progress {
+    width: 100%;
+    height: 10px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #e9e5f5;
+}
+
+.job-match-progress-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #8b5cf6, #4f46e5);
+    transition: width 0.6s ease;
+}
+
+.job-recommendation-subsection {
+    margin-top: 18px;
+}
+
+.job-recommendation-subsection h4 {
+    margin: 0 0 10px;
+    color: #334155;
+    font-size: 15px;
+}
+
+.job-recommendation-subsection ul {
+    margin: 0;
+    padding-left: 22px;
+    color: #64748b;
+    line-height: 1.9;
+}
+
+.job-recommendation-subsection li {
+    padding-left: 3px;
+    overflow-wrap: anywhere;
+}
+
+.job-recommendation-subsection.matched h4 {
+    color: #15803d;
+}
+
+.job-recommendation-subsection.missing h4 {
+    color: #b45309;
+}
+
+.job-recommendation-subsection.learning h4 {
+    color: #6d28d9;
+}
+
+.job-recommendations-note {
+    margin-top: 22px;
+    padding: 14px;
+    border-radius: 10px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+    .job-recommendations-section {
+        padding: 17px;
+    }
+
+    .job-recommendations-header h2 {
+        font-size: 21px;
+    }
+
+    .recommend-jobs-btn {
+        width: 100%;
+    }
+
+    .job-recommendation-card {
+        padding: 16px;
+    }
+}
+    </style>
+</head>
+
+<body>
+<header class="topbar">
+    <a class="brand" href="/">
+        <span class="brand-icon">C</span>
+        <span>CareerFit AI</span>
+    </a>
+
+    <div class="header-links">
+        <a href="/">Dashboard</a>
+        <a href="#contact">Contact Us</a>
+    </div>
+</header>
+
+<main class="analysis-container">
+
+    <div class="page-heading">
+        <p class="eyebrow">AI-POWERED CAREER TOOLS</p>
+        <h1>Resume & Job Analysis</h1>
+        <p class="subtitle">Tailor your resume to the role you want.</p>
+    </div>
+
+    <form id="analysisForm" enctype="multipart/form-data">
+
+        <div class="analysis-grid">
+
+            <!-- RESUME SECTION -->
+            <section class="analysis-column">
+                <h2>Resume</h2>
+
+                <p class="description">
+                    Upload your existing resume or create a new one.
+                    Your resume will be processed to extract relevant
+                    skills and experience.
+                </p>
+
+                <div class="tabs">
+                    <button type="button"
+                            class="tab active"
+                            data-tab="upload"
+                            aria-selected="true">
+                        Upload Resume
+                    </button>
+
+                    <button type="button"
+                            class="tab"
+                            data-tab="create"
+                            aria-selected="false">
+                        Create New Resume
+                    </button>
+                </div>
+
+                <div class="upload-card">
+
+                    <!-- UPLOAD RESUME PANEL -->
+                    <div id="uploadPanel" class="tab-panel">
+
+                        <label class="drop-zone"
+                               id="dropZone"
+                               for="resumeFile">
+
+                            <span class="upload-icon">↑</span>
+                            <strong>Drag your resume here</strong>
+                            <span>or click to browse PDF or DOCX</span>
+                            <small>Maximum file size: 5 MB</small>
+                        </label>
+
+                        <input
+                            id="resumeFile"
+                            name="resume"
+                            type="file"
+                            accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                            hidden
+                        >
+
+                        <p id="fileName"
+                           class="file-name"
+                           aria-live="polite"></p>
+                    </div>
+
+                    <!-- CREATE RESUME PANEL -->
+                    <div id="createPanel"
+                         class="tab-panel"
+                         hidden>
+
+                        <label for="resumeText">
+                            Paste your resume content
+                        </label>
+
+                        <textarea
+                            id="resumeText"
+                            name="resume_text"
+                            rows="9"
+                            placeholder="Name, summary, skills, education, projects and experience..."
+                        ></textarea>
+                    </div>
+
+                    <div id="uploadError"
+                         class="error-message"
+                         role="alert"
+                         hidden></div>
+
+                    <p id="uploadStatus"
+                       role="status"
+                       aria-live="polite"></p>
+                </div>
+            </section>
+
+            <!-- JOB DESCRIPTION SECTION -->
+            <section class="analysis-column">
+
+                <h2>Job Description</h2>
+
+                <p class="description">
+                    Specify the role you're applying for and provide
+                    the job description so the AI can compare the
+                    requirements with your resume.
+                </p>
+
+                <div class="job-input-card">
+
+                    <label for="jobTitle">
+                        Job title <span>*</span>
+                    </label>
+
+                    <input
+                        id="jobTitle"
+                        name="job_title"
+                        type="text"
+                        placeholder="e.g. Data Analyst"
+                        required
+                    >
+
+                    <label for="companyName">
+                        Company name (optional)
+                    </label>
+
+                    <input
+                        id="companyName"
+                        name="company_name"
+                        type="text"
+                        placeholder="e.g. Company name"
+                    >
+
+                    <label for="jobDescription">
+                        Job description <span>*</span>
+                    </label>
+
+                    <textarea
+                        id="jobDescription"
+                        name="job_description"
+                        rows="9"
+                        required
+                        placeholder="Paste the job description here..."
+                    ></textarea>
+
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ANALYSIS RESULTS -->
+        <section id="analysisResults"
+                 class="upload-card"
+                 aria-live="polite"
+                 hidden>
+
+            <h2>Analysis Results</h2>
+
+            <p id="resultJobTitle"></p>
+
+            <p>Resume–Job Match Score</p>
+            <h1 id="matchScore">0%</h1>
+
+            <p id="matchedSummary"></p>
+
+            <h3>Matched Skills</h3>
+            <ul id="matchedSkills"></ul>
+
+            <h3>Missing Skills</h3>
+            <ul id="missingSkills"></ul>
+
+            <h3>Skills Detected in Your Resume</h3>
+            <ul id="resumeSkills"></ul>
+
+            <p id="noSkillsMessage" hidden>
+                No recognized skills were found in the job description.
+                Try a more detailed job description.
+            </p>
+            <!-- PHASE 10: RESUME READINESS SCORE -->
+<section id="resumeReadinessSection"
+         class="resume-readiness-section"
+         aria-labelledby="readinessTitle"
+         hidden>
+
+    <div class="readiness-header">
+        <div>
+
+            <h2 id="readinessTitle">Resume Readiness Score</h2>
+
+            <p>
+                Evaluate your resume's content quality,
+                job relevance, and keyword coverage.
+            </p>
+        </div>
+    </div>
+
+    <!-- OVERALL SCORE -->
+    <div class="readiness-score-card">
+        <div class="readiness-score-circle">
+            <span id="readinessScore">—</span>
+            <small>/ 100</small>
+        </div>
+
+        <div class="readiness-score-info">
+            <h3 id="readinessLabel">Readiness assessment</h3>
+
+            <p id="readinessDescription">
+                Your readiness assessment will appear here.
+            </p>
+
+            <div class="readiness-progress-track">
+                <div id="readinessProgress"
+                     class="readiness-progress-fill">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCORE BREAKDOWN -->
+    <div class="readiness-components">
+        <article class="readiness-component-card">
+            <span class="readiness-component-icon">▤</span>
+
+            <h3>Content Quality</h3>
+
+            <strong id="contentQualityScore">—</strong>
+
+            <div class="readiness-mini-track">
+                <div id="contentQualityProgress"
+                     class="readiness-mini-fill">
+                </div>
+            </div>
+
+            <p>Resume sections and completeness</p>
+        </article>
+
+        <article class="readiness-component-card">
+            <span class="readiness-component-icon">◎</span>
+
+            <h3>Job Relevance</h3>
+
+            <strong id="jobRelevanceScore">—</strong>
+
+            <div class="readiness-mini-track">
+                <div id="jobRelevanceProgress"
+                     class="readiness-mini-fill">
+                </div>
+            </div>
+
+            <p>Alignment with the target job</p>
+        </article>
+
+        <article class="readiness-component-card">
+            <span class="readiness-component-icon">⌕</span>
+
+            <h3>Keyword Coverage</h3>
+
+            <strong id="keywordCoverageScore">—</strong>
+
+            <div class="readiness-mini-track">
+                <div id="keywordCoverageProgress"
+                     class="readiness-mini-fill">
+                </div>
+            </div>
+
+            <p>Recognized job-related skills</p>
+        </article>
+    </div>
+
+    <!-- ACTIONABLE FEEDBACK -->
+    <div class="readiness-feedback-section">
+        <div class="readiness-subheading">
+            <h3>Recommended Actions</h3>
+
+            <p>
+                Focus on these suggestions to improve your resume.
+            </p>
+        </div>
+
+        <div id="readinessFeedback"
+             class="readiness-feedback-list">
+            <p class="readiness-empty">
+                Feedback will appear after assessment.
+            </p>
+        </div>
+    </div>
+
+    <!-- MISSING KEYWORDS -->
+    <div class="readiness-keywords-section">
+        <h3>Skills to Review</h3>
+
+        <div id="readinessMissingSkills"
+             class="readiness-keyword-list">
+            <p class="readiness-empty">
+                Missing skills will appear here when a job
+                description is provided.
+            </p>
+        </div>
+    </div>
+
+    <!-- DISCLAIMER -->
+    <p id="readinessDisclaimer"
+       class="readiness-disclaimer">
+        This rule-based score is an estimate. It does not
+        guarantee ATS acceptance or job selection.
+    </p>
+
+</section>
+<!-- END PHASE 10 -->
+
+            <!-- DETAILED ATS REPORT -->
+            <section id="atsReport"
+                     class="ats-report"
+                     aria-labelledby="atsReportTitle">
+
+                <div class="ats-header">
+                    <div>
+                        <p class="eyebrow">RESUME QUALITY CHECK</p>
+                        <h2 id="atsReportTitle">ATS Analysis Report</h2>
+                        <p id="atsSummary">
+                            Reviewing your resume checks...
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="ats-score">
+                            <span id="atsScore">—</span><small>/100</small>
+                        </div>
+                        <span id="atsScoreLabel">ATS score</span>
+                    </div>
+                </div>
+
+                <div class="ats-progress-track"
+                     role="progressbar"
+                     id="atsProgress"
+                     aria-label="ATS score"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     aria-valuenow="0">
+                    <div id="atsProgressFill"
+                         class="ats-progress-fill"></div>
+                </div>
+
+                <!-- ATS STATISTICS -->
+                <div class="ats-stats">
+                    <div class="ats-stat">
+                        <strong id="atsWordCount">—</strong>
+                        <span>Words detected</span>
+                    </div>
+
+                    <div class="ats-stat">
+                        <strong id="atsPassedCount">—</strong>
+                        <span>Checks passed</span>
+                    </div>
+
+                    <div class="ats-stat">
+                        <strong id="atsFailedCount">—</strong>
+                        <span>Checks to improve</span>
+                    </div>
+                </div>
+
+                <!-- CHECKLIST -->
+                <div class="ats-section">
+                    <h3>Resume Checklist</h3>
+                    <p class="description">
+                        Review each check to understand which areas
+                        are working well and which need attention.
+                    </p>
+
+                    <ul id="atsChecks" class="ats-check-list">
+                        <li>ATS checklist will appear after analysis.</li>
+                    </ul>
+                </div>
+
+                <!-- GENERAL SUGGESTIONS -->
+                <div class="ats-section">
+                    <h3>Improvement Suggestions</h3>
+
+                    <ul id="atsSuggestions" class="ats-suggestions">
+                        <li>Suggestions will appear after analysis.</li>
+                    </ul>
+                </div>
+
+                <!-- PRIORITIZED RECOMMENDATIONS -->
+                <div class="ats-section">
+                    <h3>Prioritized Resume Recommendations</h3>
+
+                    <p class="description">
+                        Focus on the most important improvements first.
+                        Recommendations are based on the current resume
+                        checks and recognized job-description skills.
+                    </p>
+
+                    <ul id="atsRecommendations"
+                        class="recommendation-list">
+                        <li class="recommendation-card">
+                            Recommendations will appear after analysis.
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- DETECTED SECTIONS -->
+                <div class="ats-section">
+                    <h3>Sections Detected</h3>
+                    <div id="atsSections" class="ats-tags">
+                        <span class="ats-tag">Not available</span>
+                    </div>
+                </div>
+
+                <!-- ACTION VERBS -->
+                <div class="ats-section">
+                    <h3>Action Verbs Detected</h3>
+                    <div id="atsActionVerbs" class="ats-tags">
+                        <span class="ats-tag">Not available</span>
+                    </div>
+                </div>
+
+                <p class="ats-disclaimer">
+                    This ATS score is an estimate based on CareerFit AI's
+                    predefined resume checks. It is not a score issued by
+                    a real applicant tracking system. Passing these checks
+                    does not guarantee selection for a job.
+                </p>
+            </section>
+
+            <!-- PHASE 4: RESUME IMPROVEMENT ASSISTANT -->
+            <section id="resumeImprovementSection"
+                     class="improvement-assistant"
+                     aria-labelledby="improvementTitle">
+
+                <div class="improvement-header">
+
+                    <h2 id="improvementTitle">
+                        Resume Improvement Assistant
+                    </h2>
+
+                    <p>
+                        Get actionable suggestions to improve your resume,
+                        review job-description keywords, and strengthen
+                        project or experience descriptions.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    id="improveResumeBtn"
+                    class="improve-resume-btn">
+                    Improve My Resume
+                </button>
+
+                <p id="improvementStatus"
+                   class="improvement-status"
+                   role="status"
+                   aria-live="polite"></p>
+
+                <div id="improvementResults" hidden>
+
+                    <!-- IMPROVEMENT RECOMMENDATIONS -->
+                    <div class="improvement-subsection">
+                        <h3>Recommended Improvements</h3>
+
+                        <div id="improvementRecommendations"
+                             class="improvement-results-list">
+                        </div>
+                    </div>
+
+                    <!-- BULLET POINT IMPROVEMENTS -->
+                    <div class="improvement-subsection">
+                        <h3>Improved Bullet Points</h3>
+
+                        <div id="improvedBulletPoints"
+                             class="improvement-results-list">
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+            <!-- END PHASE 4 -->
+
+           <!-- ========================================
+     PHASE 5: AI-POWERED JOB RECOMMENDATIONS
+======================================== -->
+
+<section
+    id="jobRecommendationsSection"
+    class="job-recommendations-section"
+    aria-labelledby="jobRecommendationsTitle"
+>
+    <div class="job-recommendations-header">
+        <h2 id="jobRecommendationsTitle">
+            AI-Powered Job Recommendations
+        </h2>
+
+        <p>
+            Discover job roles that match your resume skills.
+            Explore your strengths, identify skills to develop,
+            and plan your next learning steps.
+        </p>
+    </div>
+
+    <button
+        type="button"
+        id="recommendJobsBtn"
+        class="recommend-jobs-btn"
+    >
+        <span aria-hidden="true">✦</span>
+        Recommend Jobs
+    </button>
+
+    <p
+        id="jobRecommendationsStatus"
+        class="job-recommendations-status"
+        role="status"
+        aria-live="polite"
+    ></p>
+
+    <div id="jobRecommendationsResults">
+        <!-- Job recommendations will be inserted here by JavaScript. -->
+    </div>
+
+    <p class="job-recommendations-note">
+        <strong>Note:</strong>
+        Match percentages represent overlap between detected
+        resume skills and predefined job requirements. They
+        are estimates, not predictions of hiring success.
+    </p>
+</section>
+
+<!-- END PHASE 5 -->
+
+        </section>
+
+        <!-- FORM ACTIONS -->
+        <div class="form-footer">
+
+            <a href="/" class="secondary-button">
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="primary-button"
+                id="generateButton">
+                Generate Analysis →
+            </button>
+
+        </div>
+
+    </form>
+</main>
+
+<script src="{{ url_for('static', filename='js/analyze.js') }}"></script>
+
+</body>
+</html>
+
+
+
+
+

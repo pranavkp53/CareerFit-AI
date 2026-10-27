@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerFit AI | Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <a class="brand" href="/">
+            <span class="brand-icon">C</span>
+            <span>CareerFit <small>AI Career Assistant</small></span>
+        </a>
+
+        <nav class="nav-menu">
+            <p class="nav-heading">WORKSPACE</p>
+
+            <a class="nav-link active" href="#dashboard">
+                ▦ <span>Dashboard</span>
+            </a>
+
+            <a class="nav-link" href="/analyze">
+                ◈ <span>Resume Analysis</span>
+            </a>
+
+            <a class="nav-link" href="#jobs">
+                ⌕ <span>AI Job Matches</span>
+            </a>
+
+            <a class="nav-link" href="#improvement">
+                ✧ <span>Resume Studio</span>
+            </a>
+
+            <a class="nav-link" href="#career">
+                ◎ <span>Career Development</span>
+            </a>
+
+            <p class="nav-heading">CAREER TOOLS</p>
+
+            <a class="nav-link" href="#skills">
+                ◇ <span>Skill Gap Analyzer</span>
+            </a>
+
+            <a class="nav-link" href="#interview">
+                ▤ <span>Interview Preparation</span>
+            </a>
+
+            <a class="nav-link" href="#learning">
+                ⌁ <span>Learning Roadmap</span>
+            </a>
+
+            <a class="nav-link" href="#insights">
+                ▥ <span>Insights & Reports</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="upgrade-card">
+                <span class="upgrade-icon">✦</span>
+                <strong>Your career, upgraded.</strong>
+                <p>Build skills and improve your job readiness with AI.</p>
+                <a href="#career" class="upgrade-link">
+                    Explore career tools →
+                </a>
+            </div>
+
+            <a class="nav-link" href="#settings">
+                ⚙ <span>Settings</span>
+            </a>
+
+            <div class="user-profile">
+                <div class="avatar">U</div>
+                <div>
+                    <strong>Career User</strong>
+                    <small>CareerFit AI Member</small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="dashboard">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <button class="icon-button mobile-menu"
+                    id="menuToggle"
+                    aria-label="Toggle navigation">
+                ☰
+            </button>
+
+            <div class="breadcrumb">
+                Workspace <span>/</span> Dashboard
+            </div>
+
+            <div class="topbar-actions">
+                <label class="search-box">
+                    <span>⌕</span>
+                    <input id="globalSearch"
+                           type="search"
+                           placeholder="Search jobs, skills...">
+                    <kbd>⌘ K</kbd>
+                </label>
+
+                <button class="icon-button"
+                        title="Notifications"
+                        aria-label="Notifications">
+                    ♧
+                </button>
+
+                <div class="avatar top-avatar">U</div>
+            </div>
+        </header>
+
+        <!-- WELCOME -->
+        <section class="welcome-section">
+            <div>
+                <p class="eyebrow">YOUR CAREER WORKSPACE</p>
+
+                <h1 id="greetingMessage"> Good morning, <span>there</span> 👋</h1>
+
+                <p class="muted">
+                    Your career progress, resume insights and next opportunities.
+                </p>
+            </div>
+
+            <a href="/analyze" class="primary-button">
+                ＋ Analyze my resume
+            </a>
+        </section>
+
+        <!-- AI BANNER -->
+        <section class="insight-banner">
+            <div class="banner-icon">✦</div>
+
+            <div class="banner-copy">
+                <strong>Your AI career assistant is ready</strong>
+                <p>
+                    Analyze a resume against a job description to discover
+                    your strengths and skill gaps.
+                </p>
+            </div>
+
+            <a href="/analyze" class="banner-link">
+                Start analysis →
+            </a>
+        </section>
+
+        <!-- SCORE ANALYZER -->
+        <section class="section-heading" id="analysis">
+            <div>
+                <h2>Resume Score Analyzer</h2>
+                <p class="muted">Your resume readiness at a glance</p>
+            </div>
+
+            <span class="status-pill">
+                <span class="status-dot"></span>
+                <span data-dashboard="status">Loading dashboard...</span>
+            </span>
+        </section>
+
+        <section class="score-grid">
+
+            <!-- OVERALL SCORE -->
+            <article class="score-card">
+                <div class="card-top">
+                    <span class="metric-icon purple">✧</span>
+                    <span class="metric-label">Overall Score</span>
+                    <span class="metric-more">···</span>
+                </div>
+
+                <div class="metric-value">
+                    <span data-dashboard="overall-score">—</span>
+                    <small>/100</small>
+                </div>
+
+                <p class="metric-note"
+                   data-dashboard="overall-note">
+                    Run your first resume analysis
+                </p>
+
+                <div class="progress-track">
+                    <div class="progress-fill purple-fill"
+                         data-dashboard-bar="overall-score"
+                         style="width:0%">
+                    </div>
+                </div>
+            </article>
+
+            <!-- KEYWORD RELEVANCE -->
+            <article class="score-card">
+                <div class="card-top">
+                    <span class="metric-icon blue">⌕</span>
+                    <span class="metric-label">Keyword Relevance</span>
+                    <span class="metric-more">···</span>
+                </div>
+
+                <div class="metric-value">
+                    <span data-dashboard="keyword-score">—</span>
+                    <small>%</small>
+                </div>
+
+                <p class="metric-note">Job-specific keyword coverage</p>
+
+                <div class="progress-track">
+                    <div class="progress-fill blue-fill"
+                         data-dashboard-bar="keyword-score"
+                         style="width:0%">
+                    </div>
+                </div>
+            </article>
+
+            <!-- ATS FORMATTING -->
+            <article class="score-card">
+                <div class="card-top">
+                    <span class="metric-icon orange">▤</span>
+                    <span class="metric-label">ATS Formatting</span>
+                    <span class="metric-more">···</span>
+                </div>
+
+                <div class="metric-value">
+                    <span data-dashboard="ats-score">—</span>
+                    <small>%</small>
+                </div>
+
+                <p class="metric-note">Structure and readability</p>
+
+                <div class="progress-track">
+                    <div class="progress-fill orange-fill"
+                         data-dashboard-bar="ats-score"
+                         style="width:0%">
+                    </div>
+                </div>
+            </article>
+
+            <!-- EXPERIENCE ALIGNMENT -->
+            <article class="score-card">
+                <div class="card-top">
+                    <span class="metric-icon green">◎</span>
+                    <span class="metric-label">Experience Alignment</span>
+                    <span class="metric-more">···</span>
+                </div>
+
+                <div class="metric-value">
+                    —<small>%</small>
+                </div>
+
+                <p class="metric-note">Relevant projects and experience</p>
+
+                <div class="progress-track">
+                    <div class="progress-fill green-fill"
+                         style="width:0%">
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- CAREER GROWTH AND QUICK ACTIONS -->
+        <section class="middle-grid">
+
+            <article class="panel growth-panel" id="career">
+                <div class="section-heading compact">
+                    <div>
+                        <h2>Career Growth Tracker</h2>
+                        <p class="muted">Your job search at a glance</p>
+                    </div>
+
+                    <span class="panel-icon">↗</span>
+                </div>
+
+                <div class="growth-stats">
+                    <div>
+                        <span class="stat-dot teal"></span>
+                        <span>Saved Jobs</span>
+                        <strong id="savedCount">0</strong>
+                    </div>
+
+                    <div>
+                        <span class="stat-dot blue-dot"></span>
+                        <span>Analyses Completed</span>
+                        <strong data-dashboard="total-analyses">0</strong>
+                    </div>
+
+                    <div>
+                        <span class="stat-dot pink"></span>
+                        <span>Skills to Develop</span>
+                        <strong data-dashboard="missing-skills-count">0</strong>
+                    </div>
+                </div>
+
+                <div class="growth-bars">
+                    <div class="growth-bar teal-bar" style="width:33%"></div>
+                    <div class="growth-bar blue-bar" style="width:33%"></div>
+                    <div class="growth-bar pink-bar" style="width:34%"></div>
+                </div>
+
+                <p class="chart-footnote"
+                   data-dashboard="growth-note">
+                    Your tracker will update as you use the application.
+                </p>
+            </article>
+
+            <article class="panel quick-panel">
+                <div class="section-heading compact">
+                    <div>
+                        <h2>Quick Actions</h2>
+                        <p class="muted">Pick up where you need help</p>
+                    </div>
+                </div>
+
+                <a class="quick-action" href="/analyze">
+                    <span class="quick-icon purple">✧</span>
+                    <span>
+                        <strong>Analyze a resume</strong>
+                        <small>Match your resume to a role</small>
+                    </span>
+                    <span class="action-arrow">→</span>
+                </a>
+
+                <a class="quick-action" href="#skills">
+                    <span class="quick-icon blue">◇</span>
+                    <span>
+                        <strong>Find skill gaps</strong>
+                        <small>Discover missing requirements</small>
+                    </span>
+                    <span class="action-arrow">→</span>
+                </a>
+
+                <a class="quick-action" href="#interview">
+                    <span class="quick-icon green">▤</span>
+                    <span>
+                        <strong>Prepare for interviews</strong>
+                        <small>Practice role-specific questions</small>
+                    </span>
+                    <span class="action-arrow">→</span>
+                </a>
+
+                <a class="quick-action" href="/history">
+                    <span class="quick-icon purple">▤</span>
+                    <span>
+                        <strong>Analysis history</strong>
+                        <small>View your previous results</small>
+                    </span>
+                    <span class="action-arrow">→</span>
+                </a>
+            </article>
+
+        </section>
+
+        <!-- RECENT ANALYSES -->
+                 <!-- PHASE 6: DASHBOARD ANALYTICS -->
+        <!-- PHASE 6: DASHBOARD ANALYTICS -->
+<section class="dashboard-analytics" id="insights">
+
+    <!-- SECTION HEADER -->
+    <div class="analytics-header">
+        <div>
+            <span class="analytics-eyebrow">YOUR PERFORMANCE</span>
+            <h2>Dashboard Analytics</h2>
+            <p>Track your progress, discover skill gaps, and improve your job readiness.</p>
+        </div>
+
+        <button type="button"
+                class="analytics-refresh"
+                id="refreshAnalytics">
+            <span class="refresh-icon">↻</span>
+            Refresh
+        </button>
+    </div>
+
+
+    <!-- SUMMARY CARDS -->
+    <div class="analytics-summary-grid">
+
+        <article class="analytics-summary-card summary-purple">
+            <div class="summary-card-top">
+                <span class="summary-icon">▤</span>
+                <span class="summary-label">Total Analyses</span>
+            </div>
+
+            <div class="summary-value"
+                 data-dashboard="analytics-total">0</div>
+
+            <p>Resume comparisons completed</p>
+        </article>
+
+
+        <article class="analytics-summary-card summary-blue">
+            <div class="summary-card-top">
+                <span class="summary-icon">↗</span>
+                <span class="summary-label">Average Match Score</span>
+            </div>
+
+            <div class="summary-value">
+                <span data-dashboard="analytics-average">0</span><small>%</small>
+            </div>
+
+            <p>Your average job compatibility</p>
+        </article>
+
+
+        <article class="analytics-summary-card summary-green">
+            <div class="summary-card-top">
+                <span class="summary-icon">✓</span>
+                <span class="summary-label">Latest Analysis</span>
+            </div>
+
+            <div class="summary-date"
+                 data-dashboard="analytics-latest-date">—</div>
+
+            <p>Most recent saved result</p>
+        </article>
+
+    </div>
+
+
+    <!-- MATCH SCORE TREND -->
+    <article class="analytics-card analytics-trend-card">
+
+        <div class="analytics-card-header">
+            <div class="analytics-title-group">
+                <span class="analytics-heading-icon chart-heading-icon">↗</span>
+
+                <div>
+                    <h3>Match Score Trend</h3>
+                    <p>See how your resume matching scores change over time.</p>
+                </div>
+            </div>
+
+            <span class="analytics-badge">Last 10 analyses</span>
+        </div>
+
+        <div class="analytics-chart-container" id="matchScoreChartContainer">
+            <canvas id="matchScoreChart"
+                    role="img"
+                    aria-label="Resume match score trend chart">
+            </canvas>
+
+            <p class="analytics-empty"
+               id="matchScoreChartEmpty"
+               hidden>
+                Complete a resume analysis to see your score trend.
+            </p>
+        </div>
+
+    </article>
+
+
+    <!-- JOB ROLES AND SKILLS -->
+    <div class="analytics-insights-grid">
+
+        <!-- TOP JOB ROLES -->
+        <article class="analytics-card">
+
+            <div class="analytics-card-header">
+                <div class="analytics-title-group">
+                    <span class="analytics-heading-icon roles-heading-icon">▦</span>
+
+                    <div>
+                        <h3>Top Job Roles</h3>
+                        <p>Your most frequently analyzed positions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analytics-list" id="topJobRoles">
+                <p class="analytics-loading">
+                    Loading job role analytics...
+                </p>
+            </div>
+
+        </article>
+
+
+        <!-- FREQUENTLY MISSING SKILLS -->
+        <article class="analytics-card">
+
+            <div class="analytics-card-header">
+                <div class="analytics-title-group">
+                    <span class="analytics-heading-icon skills-heading-icon">◇</span>
+
+                    <div>
+                        <h3>Skill Gaps to Focus On</h3>
+                        <p>Skills frequently missing from your analyzed resumes.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analytics-list" id="frequentlyMissingSkills">
+                <p class="analytics-loading">
+                    Loading skill analytics...
+                </p>
+            </div>
+
+        </article>
+
+    </div>
+
+</section>
+
+            
+        <section class="panel" id="recentAnalysesPanel">
+            <div class="section-heading compact">
+                <div>
+                    <h2>Recent Analyses</h2>
+                    <p class="muted">
+                        Your latest saved resume comparisons
+                    </p>
+                </div>
+
+                <a href="/history">View history →</a>
+            </div>
+
+            <div data-dashboard="recent-analyses">
+                <p class="muted">Loading recent analyses...</p>
+            </div>
+        </section>
+
+        <!-- JOB FEED -->
+        <section class="panel jobs-panel" id="jobs">
+            <div class="section-heading">
+                <div>
+                    <h2>Personalized Job Feed</h2>
+                    <p class="muted">
+                        Explore roles that match your career goals
+                    </p>
+                </div>
+
+                <div class="feed-controls">
+                    <input id="jobSearch"
+                           type="search"
+                           placeholder="Filter roles...">
+
+                    <select id="jobFilter" aria-label="Filter jobs">
+                        <option value="all">All roles</option>
+                        <option value="saved">Saved only</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="job-grid" id="jobGrid">
+
+                <article class="job-card" data-title="data analyst">
+                    <div class="job-card-top">
+                        <div class="company-logo purple-logo">DA</div>
+
+                        <button class="save-button"
+                                aria-label="Save Data Analyst job"
+                                data-save="data-analyst">♡</button>
+                    </div>
+
+                    <h3>Data Analyst</h3>
+                    <p class="company-name">
+                        Sample role · Company not specified
+                    </p>
+
+                    <div class="job-tags">
+                        <span>Analytics</span>
+                        <span>SQL</span>
+                        <span>Power BI</span>
+                    </div>
+
+                    <p class="job-description">
+                        Analyze data, develop dashboards and communicate
+                        business insights.
+                    </p>
+
+                    <div class="match-row">
+                        <span>Match score</span>
+                        <strong>Pending analysis</strong>
+                    </div>
+
+                    <div class="job-actions">
+                        <a href="/analyze" class="apply-button">Analyze fit →</a>
+                    </div>
+                </article>
+
+                <article class="job-card" data-title="python developer">
+                    <div class="job-card-top">
+                        <div class="company-logo teal-logo">PY</div>
+
+                        <button class="save-button"
+                                aria-label="Save Python Developer job"
+                                data-save="python-developer">♡</button>
+                    </div>
+
+                    <h3>Python Developer</h3>
+                    <p class="company-name">
+                        Sample role · Company not specified
+                    </p>
+
+                    <div class="job-tags">
+                        <span>Python</span>
+                        <span>Flask</span>
+                        <span>SQL</span>
+                    </div>
+
+                    <p class="job-description">
+                        Build backend services, integrate APIs and maintain
+                        application logic.
+                    </p>
+
+                    <div class="match-row">
+                        <span>Match score</span>
+                        <strong>Pending analysis</strong>
+                    </div>
+
+                    <div class="job-actions">
+                        <a href="/analyze" class="apply-button">Analyze fit →</a>
+                    </div>
+                </article>
+
+                <article class="job-card"
+                         data-title="junior machine learning engineer">
+                    <div class="job-card-top">
+                        <div class="company-logo orange-logo">ML</div>
+
+                        <button class="save-button"
+                                aria-label="Save ML Engineer job"
+                                data-save="ml-engineer">♡</button>
+                    </div>
+
+                    <h3>Junior ML Engineer</h3>
+                    <p class="company-name">
+                        Sample role · Company not specified
+                    </p>
+
+                    <div class="job-tags">
+                        <span>Python</span>
+                        <span>ML</span>
+                        <span>NLP</span>
+                    </div>
+
+                    <p class="job-description">
+                        Experiment with machine learning models and evaluate
+                        their performance.
+                    </p>
+
+                    <div class="match-row">
+                        <span>Match score</span>
+                        <strong>Pending analysis</strong>
+                    </div>
+
+                    <div class="job-actions">
+                        <a href="/analyze" class="apply-button">Analyze fit →</a>
+                    </div>
+                </article>
+
+                <p class="empty-state" id="emptyJobs" hidden>
+                    No roles match your filter.
+                </p>
+
+            </div>
+
+            <p class="demo-note">
+                These are illustrative role cards, not live vacancies.
+                Real job matching will be added in a later phase.
+            </p>
+        </section>
+
+        <!-- SKILL GAP AND RESUME IMPROVEMENT -->
+        <section class="bottom-grid">
+
+            <!-- SKILL GAP ANALYZER -->
+            <article class="panel" id="skills">
+                <div class="section-heading compact">
+                    <div>
+                        <h2>Skill Gap Analyzer</h2>
+                        <p class="muted">Skills identified from your latest analysis</p>
+                    </div>
+                    <span class="metric-icon blue">◇</span>
+                </div>
+
+                <div class="skill-summary">
+                    <div class="skill-summary-card">
+                        <span class="skill-summary-number" id="matchedSkillCount">—</span>
+                        <span>Matched skills</span>
+                    </div>
+                    <div class="skill-summary-card">
+                        <span class="skill-summary-number" id="missingSkillCount">—</span>
+                        <span>Skills to develop</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <h3>Matched Skills</h3>
+                    <div id="dashboardMatchedSkills" class="skill-badges">
+                        <p class="muted">Loading matched skills...</p>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <h3>Skills to Develop</h3>
+                    <div id="dashboardMissingSkills" class="skill-badges">
+                        <p class="muted">Loading missing skills...</p>
+                    </div>
+                </div>
+
+                <p class="skill-footnote" id="skillGapMessage">
+                    Run an analysis to discover your skill gaps.
+                </p>
+
+                <a href="/analyze" class="skill-action">
+                    Analyze another job →
+                </a>
+            </article>
+
+            <!-- RESUME IMPROVEMENT STUDIO -->
+            <article class="panel" id="improvement">
+                <div class="section-heading compact">
+                    <div>
+                        <h2>Resume Improvement Studio</h2>
+                        <p class="muted">
+                            Make your resume clearer and more relevant
+                        </p>
+                    </div>
+
+                    <span class="metric-icon purple">✧</span>
+                </div>
+
+                <div class="empty-feature">
+                    <div class="empty-illustration purple-illustration">✎</div>
+
+                    <strong>Ready to improve your resume?</strong>
+
+                    <p>
+                        Get targeted feedback on keywords, formatting and
+                        project descriptions.
+                    </p>
+
+                    <a href="/analyze">Get started →</a>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <span>CareerFit AI</span>
+            <span>AI-powered career insights · Results should be verified</span>
+        </footer>
+
+    </main>
+</div>
+
+<!-- Chart.js for the match score trend chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- CareerFit AI dashboard JavaScript -->
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+</body>
+</html>
+
+
+
